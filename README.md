@@ -1,18 +1,35 @@
-TechCorp Terraform Assessment – Month 1
-Prerequisites
+# TechCorp Terraform Assessment – Month 1
 
-Before deploying the infrastructure, ensure the following are installed and configured:
+## 📌 Overview
 
-Terraform
- (v1.x or later)
-AWS CLI
- configured with credentials and default region
-SSH key pair for EC2 access (variable: key_name)
-Internet access to your machine (for downloading AMIs and updates)
-Folder Structure
+This project provisions a highly available and secure web application infrastructure on AWS using Terraform.
 
-Your terraform-assessment/ folder should contain:
+The infrastructure includes:
 
+* VPC with public and private subnets
+* Internet Gateway and NAT Gateways
+* Security Groups
+* Bastion Host for secure access
+* Web Servers (Apache)
+* Database Server (PostgreSQL)
+* Application Load Balancer
+
+---
+
+## ⚙️ Prerequisites
+
+Before deploying, ensure you have:
+
+* Terraform (v1.x or later)
+* AWS CLI configured with credentials
+* An SSH key pair (for EC2 access)
+* Internet connection
+
+---
+
+## 📁 Project Structure
+
+```
 terraform-assessment/
 ├── main.tf
 ├── variables.tf
@@ -23,64 +40,129 @@ terraform-assessment/
 │   └── db_server_setup.sh
 ├── README.md
 └── evidence/
-    └── (screenshots of deployment and verification)
+    └── (deployment screenshots)
+```
 
-⚠️ Do not include .tfstate files or AWS CLI installers when submitting. Keep only the required Terraform files, user data scripts, README, and evidence screenshots.
+---
 
-Deployment Steps
-Initialize Terraform
+## 🚀 Deployment Steps
+
+### 1. Initialize Terraform
+
+```bash
 cd terraform-assessment
 terraform init
-Check the execution plan
+```
+
+### 2. Review Execution Plan
+
+```bash
 terraform plan
-Terraform will prompt for required variables.
-You may use the example file terraform.tfvars.example to fill in your values.
-Apply the Terraform configuration
+```
+
+### 3. Apply Configuration
+
+```bash
 terraform apply
-Type yes to confirm.
-Wait for Terraform to finish creating all resources.
-Take a screenshot of the Terraform apply completion.
-SSH Access
-Bastion Host
+```
+
+Type `yes` when prompted.
+
+---
+
+## 🔐 SSH Access
+
+### Bastion Host
+
+```bash
 ssh -i <your-key>.pem ec2-user@<bastion_public_ip>
-Replace <your-key>.pem with your SSH key.
-Replace <bastion_public_ip> with the output from Terraform:
-terraform output bastion_public_ip
-Web and Database Servers (via Bastion)
+```
+
+### Web & Database Servers (via Bastion)
+
+```bash
 ssh -i <your-key>.pem ec2-user@<web_private_ip>
 ssh -i <your-key>.pem ec2-user@<db_private_ip>
+```
 
-⚠️ Do not hardcode IPs; use your Terraform outputs for dynamic values.
+> Use values from:
 
-Application Verification
-Web Servers
-On each web server:
+```bash
+terraform output
+```
+
+---
+
+## 🌐 Application Verification
+
+### Web Servers
+
+Run on each web server:
+
+```bash
 curl http://localhost
-The response should include the instance ID.
-Take screenshots of each web server output.
-ALB Access
-Access the Application Load Balancer URL from a browser:
+```
+
+---
+
+### Load Balancer
+
+Access in browser:
+
+```bash
 terraform output alb_dns_name
-You should see the web page served by both web instances.
-Screenshot the ALB page showing content from both instances.
-Postgres Database
-Connect to the DB server via SSH. Then access Postgres:
+```
+
+You should see responses from both web servers.
+
+---
+
+### PostgreSQL
+
+On DB server:
+
+```bash
 sudo su - postgres
-psql
-\l
-Take a screenshot showing the database list.
-Cleanup / Destroy
+psql -l
+```
 
-After assessment submission or testing:
+---
 
+## 📸 Deployment Evidence
+
+Screenshots are included in the `evidence/` folder showing:
+
+* Terraform plan output
+* Terraform apply completion
+* AWS resources
+* Load balancer output
+* SSH access (Bastion, Web, DB)
+* PostgreSQL access
+
+---
+
+## 📤 Outputs
+
+To retrieve deployed resource values:
+
+```bash
+terraform output
+```
+
+---
+
+## 🧹 Cleanup
+
+To destroy all resources:
+
+```bash
 terraform destroy
-Type yes to confirm.
-All resources created by Terraform will be deleted.
+```
 
-⚠️ Do not include your personal IP in the README. Instead, instruct users to replace it with their own when adding security group rules.
+---
 
-Notes
-Use placeholders for all IPs and key names.
-Include screenshots in the evidence/ folder.
-Ensure all Terraform files are aligned to the submission folder structure.
-This README provides step-by-step instructions that can be followed by any reviewer to reproduce the infrastructure.
+## ⚠️ Notes
+
+* Replace placeholder values (IP addresses, key names) with your own.
+* Do not hardcode sensitive values.
+* Ensure AWS credentials are properly configured before deployment.
